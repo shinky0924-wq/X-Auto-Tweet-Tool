@@ -1,11 +1,13 @@
 import JSZip from 'jszip';
 import { AccountConfig, BotOperationSettings, DmTargetItem } from '../types';
 import { accountMultiTabToBinary, accountsInfoToExcelBinary, dmTargetsToExcelBinary } from './excelHelper';
+import autoTweetPlaywrightRaw from '../../auto_tweet_playwright.py?raw';
+import updatePs1Raw from '../../update.ps1?raw';
+import addDailyTweetsExcelRaw from '../../add_daily_tweets_excel.py?raw';
 import { 
   PYTHON_SCRIPT_TEMPLATE, 
-  PLAYWRIGHT_SCRIPT_TEMPLATE, 
   PLAYWRIGHT_DM_SCRIPT_TEMPLATE,
-  SELENIUM_SCRIPT_TEMPLATE,
+  SELENIUM_SCRIPT_TEMPLATE, 
   BROWSER_REQUIREMENTS, 
   BROWSER_README,
   BATCH_START_TEMPLATE,
@@ -34,9 +36,11 @@ export async function generatePythonProjectZip(
   zip.file('TEST_ONE_TWEET.bat', BATCH_TEST_ONE_TWEET_TEMPLATE);
   zip.file('SETUP.bat', BATCH_SETUP_TEMPLATE);
   zip.file('BUILD_EXE.bat', BATCH_BUILD_EXE_TEMPLATE);
+  zip.file('update.ps1', updatePs1Raw);
 
-  // 1. ブラウザ自動操縦スクリプト（提案1＆提案2対応）
-  zip.file('auto_tweet_playwright.py', PLAYWRIGHT_SCRIPT_TEMPLATE);
+  // 1. ブラウザ自動操縦スクリプト（完全統合・最新版: 案3画像クールダウン＆アカウント間重複ロック対応）
+  zip.file('auto_tweet_playwright.py', autoTweetPlaywrightRaw);
+  zip.file('add_daily_tweets_excel.py', addDailyTweetsExcelRaw);
 
   // 1.5. 自動DM＆フォロー用Playwrightスクリプト（提案1＆提案2対応）
   zip.file('auto_dm_playwright.py', PLAYWRIGHT_DM_SCRIPT_TEMPLATE);
@@ -183,13 +187,17 @@ export async function generatePythonProjectZip(
     zip.file(fileName, excelBinary);
   }
 
-  // 8. images フォルダ (ダミープレースホルダー)
+  // 8. images フォルダ (ダミープレースホルダー ＆ 朝昼夕夜枠フォルダ)
   const imagesFolder = zip.folder('images');
   if (imagesFolder) {
     imagesFolder.file(
       'README_IMAGES.txt',
-      'ここにエクセルで指定した画像ファイル（例: spring_collection.jpg など）を配置してください。\n相対パス "images/ファイル名.jpg" または絶対パスで指定できます。'
+      'ここにエクセルで指定した画像ファイル（例: spring_collection.jpg など）を配置してください。\n日常ツイート用には「朝枠」「昼枠」「夕方枠」「夜枠」フォルダ内に画像を保存すると、自動でランダム選出（14日間クールダウン＆重複防止）されます。'
     );
+    imagesFolder.file('朝枠/ここに朝枠の画像を保存.txt', '朝枠(7:00-9:00)の日常ツイート時に選出される画像フォルダです。');
+    imagesFolder.file('昼枠/ここに昼枠の画像を保存.txt', '昼枠(11:30-13:30)の日常ツイート時に選出される画像フォルダです。');
+    imagesFolder.file('夕方枠/ここに夕方枠の画像を保存.txt', '夕方枠(17:00-19:00)の日常ツイート時に選出される画像フォルダです。');
+    imagesFolder.file('夜枠/ここに夜枠の画像を保存.txt', '夜枠(20:00-23:30)の日常ツイート時に選出される画像フォルダです。');
   }
 
   // 9. browser_sessions フォルダ

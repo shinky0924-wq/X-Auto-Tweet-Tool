@@ -21,9 +21,11 @@ import {
   Sliders
 } from 'lucide-react';
 import { AccountConfig, BotOperationSettings, DmTargetItem } from '../types';
+import autoTweetPlaywrightRaw from '../../auto_tweet_playwright.py?raw';
+import updatePs1Raw from '../../update.ps1?raw';
+import addDailyTweetsExcelRaw from '../../add_daily_tweets_excel.py?raw';
 import { 
   PYTHON_SCRIPT_TEMPLATE, 
-  PLAYWRIGHT_SCRIPT_TEMPLATE, 
   PLAYWRIGHT_DM_SCRIPT_TEMPLATE,
   SELENIUM_SCRIPT_TEMPLATE, 
   BROWSER_REQUIREMENTS, 
@@ -51,7 +53,7 @@ export const PythonExporter: React.FC<PythonExporterProps> = ({
   dmTargets = DEFAULT_DM_TARGETS
 }) => {
   const [activeFile, setActiveFile] = useState<
-    'bat' | 'rotationbat' | 'dmbat' | 'testbat' | 'playwright' | 'dmplaywright' | 'settingsjson' | 'json' | 'readme' | 'req'
+    'rotationbat' | 'updateps1' | 'playwright' | 'dmbat' | 'bat' | 'testbat' | 'dmplaywright' | 'settingsjson' | 'json' | 'readme' | 'req'
   >('rotationbat');
   const [copied, setCopied] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
@@ -87,6 +89,8 @@ export const PythonExporter: React.FC<PythonExporterProps> = ({
     switch (activeFile) {
       case 'rotationbat':
         return BATCH_START_ROTATION_TEMPLATE;
+      case 'updateps1':
+        return updatePs1Raw;
       case 'dmbat':
         return BATCH_START_DM_TEMPLATE;
       case 'bat':
@@ -94,7 +98,7 @@ export const PythonExporter: React.FC<PythonExporterProps> = ({
       case 'testbat':
         return BATCH_TEST_ONE_TWEET_TEMPLATE;
       case 'playwright':
-        return PLAYWRIGHT_SCRIPT_TEMPLATE;
+        return autoTweetPlaywrightRaw;
       case 'dmplaywright':
         return PLAYWRIGHT_DM_SCRIPT_TEMPLATE;
       case 'settingsjson':
@@ -206,6 +210,17 @@ export const PythonExporter: React.FC<PythonExporterProps> = ({
             >
               <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
               START_ROTATION.bat (提案1ローテーション)
+            </button>
+            <button
+              onClick={() => setActiveFile('updateps1')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer ${
+                activeFile === 'updateps1'
+                  ? 'bg-neutral-800 text-emerald-400 border border-neutral-700 shadow-sm font-semibold'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
+              update.ps1 (最新アプデ)
             </button>
             <button
               onClick={() => setActiveFile('dmbat')}
