@@ -1,0 +1,6 @@
+{
+  "name": "X Multi-Account Auto Tweet Bot",
+  "description": "Pythonで動作する複数アカウント対応のX（旧Twitter）自動ツイートツール。アカウント別の設定・Excel読み込み・画像添付・ランダム実行間隔設定に対応したPythonスクリプト生成とシミュレーター。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

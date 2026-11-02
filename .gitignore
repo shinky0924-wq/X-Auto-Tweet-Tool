@@ -1,0 +1,15 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+__pycache__/
+*.pyc
+browser_sessions/
+image_cooldown_history.json
+suspended_accounts.txt
+*.exe
+public/assets/aistudio/
